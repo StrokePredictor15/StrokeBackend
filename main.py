@@ -1,12 +1,11 @@
-from flask import Flask
-from api.auth import auth_bp
-from api.predict import predict_bp
+from fastapi import FastAPI
+from api import Predict, auth
 
-app = Flask(__name__)
+app = FastAPI()
 
+app.include_router(auth.router, prefix="/auth")
+app.include_router(Predict.router, prefix="/model")
 
-app.register_blueprint(auth_bp, url_prefix='/auth')
-app.register_blueprint(predict_bp, url_prefix='/api')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.get("/")
+def home():
+    return {"message": "Stroke Prediction API running"}
